@@ -184,7 +184,7 @@ const logout = () => {
                         Apps
                     </div>
                     <div class="grid grid-cols-3 gap-4 p-4">
-                        <a :href="route('transaksi.create')" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group">
+                        <Link :href="route('transaksi.create')" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group">
                             <svg aria-hidden="true"
                                 class="mx-auto mb-1 w-7 h-7 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
                                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -195,7 +195,8 @@ const logout = () => {
                             <div class="text-sm text-gray-900 dark:text-white">
                                 Transaction
                             </div>
-                        </a>
+                        </Link>
+
                         <a :href="route('transaksi.history')" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group">
                             <svg aria-hidden="true"
                                 class="mx-auto mb-1 w-7 h-7 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
@@ -229,7 +230,7 @@ const logout = () => {
                                 Barang
                             </div>
                         </a>
-                        <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group">
+                        <a :href="route('profile')" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group">
                             <svg aria-hidden="true"
                                 class="mx-auto mb-1 w-7 h-7 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
                                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -270,7 +271,7 @@ const logout = () => {
                     </div>
                     <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                         <li>
-                            <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')" >
+                            <ResponsiveNavLink :href="route('profile')" :active="route().current('profile')" >
                                 Profile
                             </ResponsiveNavLink>
                         </li>
@@ -283,7 +284,7 @@ const logout = () => {
                         <li>
                             <!-- Authentication -->
                             <form method="POST" @submit.prevent="logout">
-                                <ResponsiveNavLink as="button" >
+                                <ResponsiveNavLink as="button" :href="route('dashboard')">
                                     Log Out
                                 </ResponsiveNavLink>
                             </form>

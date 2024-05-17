@@ -14,6 +14,12 @@ Route::post('/login', function () {
     return 'OK';
 })->name('login');
 
+Route::get('/profile', function(){
+    return Inertia::render('Profile/Index', [
+        'title' => 'Profile'
+    ]);
+})->name('profile');
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard', [
         'title' => 'Dashboard'
