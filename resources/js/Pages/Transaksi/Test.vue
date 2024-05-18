@@ -38,25 +38,25 @@
                             Customer</h5>
                         <div class="relative">
                             <InputLabel for="sku" value="SKU" />
-                            <TextInput id="sku" v-model="form.sku" type="text" class="mt-1 block xl:w-1/2 w-full" required
-                                autofocus placeholder="Find customer here .." autocomplete="off"  @keyup="onKeyUpCustomer" />
-                            <InputError class="mt-2" :message="form.errors.sku" />
-                            <div v-show="dropdownVisibleCustomer" id="dropdownCustomer" class="xl:w-1/2 w-full h-60 border border-gray-300 rounded-md bg-white absolute z-10 overflow-y-auto">
-                                <div v-for="option in filteredCustomers" :key="option.id" @click="selectOptionCustomer(option.name, option.sku, option.phone)" class="p-2.5 border-b border-gray-200 text-stone-600 cursor-pointer hover:bg-slate-100 transition-colors">
-                                   {{ option.sku }} - {{ option.name }}
+                            <TextInput id="sku" v-model="form.customer" type="text" class="mt-1 block xl:w-1/2 w-full" required
+                                autofocus placeholder="Ex. C00001" autocomplete="off"  @keyup="onKeyUpCustomer" />
+                            <InputError class="mt-2" :message="form.errors.customer" />
+                            <div v-show="dropdownVisibleCustomer" id="dropdownCustomer" class="w-full h-60 border border-gray-300 rounded-md bg-white absolute z-10 overflow-y-auto">
+                                <div v-for="option in filteredCustomers" :key="option.id" @click="selectOptionCustomer(option.name)" class="p-2.5 border-b border-gray-200 text-stone-600 cursor-pointer hover:bg-slate-100 transition-colors">
+                                       {{ option.name }}
                                 </div>
                             </div>
                         </div>
                         <div>
                             <InputLabel for="customer" value="Customer" />
-                            <TextInput id="customer" v-model="form.customer" type="text" class="mt-1 block xl:w-1/2 w-full"
-                                required autofocus placeholder="Riki Kurniawan" autocomplete="off" disabled />
-                            <InputError class="mt-2" :message="form.errors.customer" />
+                            <TextInput id="customer" v-model="form.sku" type="text" class="mt-1 block xl:w-1/2 w-full"
+                                required autofocus placeholder="Riki Kurniawan" autocomplete="off" />
+                            <InputError class="mt-2" :message="form.errors.sku" />
                         </div>
                         <div>
                             <InputLabel for="phone" value="Phone" />
                             <TextInput id="phone" v-model="form.phone" type="text" class="mt-1 block xl:w-1/2 w-full"
-                                required autofocus placeholder="+62 89519067218" autocomplete="off" disabled />
+                                required autofocus placeholder="+62 89519067218" autocomplete="off" />
                             <InputError class="mt-2" :message="form.errors.phone" />
                         </div>
                         <div class="mt-5">
@@ -229,7 +229,7 @@
                                 />
                                 <InputError class="mt-2" :message="form.errors.product_sku" />
                                 <div v-show="dropdownVisibleProduct" id="dropdownProduct" class="w-full h-60 border border-gray-300 rounded-md bg-white absolute z-10 overflow-y-auto">
-                                    <div v-for="option in filteredProducts" :key="option.id" @click="selectOption(option.name, option.sku, option.price)" class="p-2.5 border-b border-gray-200 text-stone-600 cursor-pointer hover:bg-slate-100 transition-colors">
+                                    <div v-for="option in filteredProducts" :key="option.id" @click="selectOption(option.name)" class="p-2.5 border-b border-gray-200 text-stone-600 cursor-pointer hover:bg-slate-100 transition-colors">
                                         {{ option.name }}
                                     </div>
                                 </div>
@@ -310,7 +310,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import DialogModal from '@/Components/DialogModal.vue';
 import Datepicker from 'flowbite-datepicker/Datepicker';
 import { initFlowbite } from 'flowbite'
@@ -362,12 +362,8 @@ export default {
         transaction_number.value = transactionNumber;
 
 
-
-
         onMounted(async () => {
             try {
-
-
                 const datepickerElement = document.getElementById('datepicker');
                 initFlowbite();
                 new Datepicker(datepickerElement, {
@@ -396,13 +392,12 @@ export default {
             sku: sku.value,
             phone: phone.value,
             date: date.value,
-            price: price.value
+            price: price.value ? 'on' : ''
         });
 
-
         let products = [
-            { id : 1, name: "Product 1", sku: "P1", price: 5000 },
-            { id: 2, name: "Product 2", sku: "P2", price: 10000},
+            { id : 1, name: "Product 1", code: "P1" },
+            { id: 2, name: "Product 2", code: "P2" },
             // Tambahkan data produk lainnya sesuai kebutuhan
         ];
 
@@ -413,29 +408,25 @@ export default {
 
         const filteredProducts = computed(() => {
         return products.filter((product) =>
-            product.name.toLowerCase().includes(form.product_sku.toLowerCase())
+            product.name.toLowerCase().includes(product_sku.value.toLowerCase())
         );
         });
 
         const filteredCustomers = computed(() => {
             return customers.filter((cs) =>
-                cs.name.toLowerCase().includes(form.sku.toLowerCase()) ||
-                cs.sku.toLowerCase().includes(form.sku.toLowerCase())
+                cs.name.toLowerCase().includes(customer.value.toLowerCase())
             );
         });
 
-        const selectOption = (name) => {
-        form.product_sku = name;
+        const selectOption = (selectedOption) => {
+        form.product_sku = selectedOption;
         dropdownVisibleProduct.value = false;
         };
 
-        const selectOptionCustomer = (name, sku, phone) => {
-        form.customer = name;
-        form.sku = sku;
-        form.phone = phone;
+        const selectOptionCustomer = (selectedOption) => {
+        form.customer = selectedOption;
         dropdownVisibleCustomer.value = false;
         };
-
 
         const onKeyUpProduct = (e) => {
         dropdownVisibleProduct.value = e.target.value !== '';
@@ -444,8 +435,6 @@ export default {
         const onKeyUpCustomer = (e) => {
         dropdownVisibleCustomer.value = e.target.value !== '';
         };
-
-
 
         const submitCart = () => {
             // Lakukan logika submit keranjang di sini
