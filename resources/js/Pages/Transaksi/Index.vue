@@ -4,13 +4,98 @@
             <BreadcumbLink :isCurrent="false" title="Transaction"/>
             <BreadcumbLink :isCurrent="true" :title="title"/>
         </Breadcrumb>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-            <div class="border-2 border-dashed border-gray-300 rounded-lg dark:border-gray-600 h-32 md:h-64"></div>
-            <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64"></div>
-            <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64"></div>
-            <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64"></div>
+
+
+        <div class=" rounded-lg border-gray-300 dark:border-gray-600 mb-4">
+            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <h5 id="drawer-label" class="inline-flex items-center text-sm font-semibold text-gray-500 px-4 pt-4 uppercase dark:text-gray-400">Transaction History</h5>
+                <div class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between p-4">
+                    <div class="bg-white dark:bg-gray-900">
+                        <label for="table-search" class="sr-only">Search</label>
+                        <div class="relative mt-1">
+                            <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                                </svg>
+                            </div>
+                            <input type="text" id="table-search" class="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items">
+                        </div>
+                    </div>
+                    <div>
+                        <a type="button" :href="route('transaksi.create')" class="inline-flex items-center px-4 py-2 mb-3 bg-blue-800 dark:bg-blue-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-blue-800 uppercase tracking-widest hover:bg-blue-700 dark:hover:bg-white focus:bg-blue-700 dark:focus:bg-white active:bg-blue-900 dark:active:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-blue-800 transition ease-in-out duration-150">
+                            Create
+                        </a>
+                    </div>
+                </div>
+
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">
+                                No
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Transaction Number
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Date
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Customer
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Product Total
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Sub Total
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Discount
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Ongkir
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Grand Total
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                            <td class="px-6 py-4">
+                                1
+                            </td>
+                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                202101-0001
+                            </th>
+                            <td class="px-6 py-4">
+                                01-Jan-2021
+                            </td>
+                            <td class="px-6 py-4">
+                                Riki Kurniawan
+                            </td>
+                            <td class="px-6 py-4">
+                                5
+                            </td>
+                            <td class="px-6 py-4">
+                                250,000.00
+                            </td>
+                            <td class="px-6 py-4">
+                                5,000.00
+                            </td>
+                            <td class="px-6 py-4">
+                                15,000.00
+                            </td>
+                            <td class="px-6 py-4">
+                                245,000.00
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-96 mb-4"></div>
         <div class="grid grid-cols-2 gap-4 mb-4">
             <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
             <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>

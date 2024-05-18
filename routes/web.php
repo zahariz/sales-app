@@ -31,16 +31,43 @@ Route::get('/master/barang', function() {
         'title' => 'Barang'
     ]);
 })->name('barang');
+Route::get('/master/barang/create', function() {
+    return Inertia::render('Barang/Create', [
+        'title' => 'Barang'
+    ]);
+})->name('barang.create');
+Route::get('/master/barang/create', function() {
+    return Inertia::render('Barang/Create', [
+        'title' => 'Barang'
+    ]);
+})->name('barang.create');
+Route::post('/master/barang/store', function() {
+    return 'sip';
+})->name('barang.store');
+
+
 Route::get('/master/customer', function() {
     return Inertia::render('Customer/Index', [
         'title' => 'Customer'
     ]);
 })->name('customer');
+Route::get('/master/customer/create', function() {
+    return Inertia::render('Customer/Create', [
+        'title' => 'Customer'
+    ]);
+})->name('customer.create');
+Route::post('/master/customer/store', function() {
+    return 'sip';
+})->name('customer.store');
+
+
+
 Route::get('/transaksi/history', function() {
     return Inertia::render('Transaksi/Index', [
         'title' => 'History'
     ]);
 })->name('transaksi.history');
+
 Route::get('/transaksi/create', function() {
     return Inertia::render('Transaksi/Create', [
         'title' => 'Create'
