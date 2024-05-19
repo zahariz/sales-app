@@ -72,25 +72,25 @@
                                             </button>
                                         </th>
                                         <th scope="col" class="px-6 py-3">
-                                            Transaction Number
+                                            No.
                                         </th>
                                         <th scope="col" class="px-6 py-3">
-                                            Date
+                                            Product SKU
                                         </th>
                                         <th scope="col" class="px-6 py-3">
-                                            Customer
+                                            Product
                                         </th>
                                         <th scope="col" class="px-6 py-3">
-                                            Product Total
+                                            Qty
                                         </th>
                                         <th scope="col" class="px-6 py-3">
-                                            Sub Total
+                                            Product Price
                                         </th>
                                         <th scope="col" class="px-6 py-3  items-center" colspan="2">
                                             <span class="flex items-center justify-center">Discount</span>
                                         </th>
                                         <th scope="col" class="px-6 py-3">
-                                            Ongkir
+                                            Total Discount
                                         </th>
                                         <th scope="col" class="px-6 py-3">
                                             Grand Total
@@ -107,14 +107,14 @@
                                             <span class="font-bold flex justify-center">%</span>
                                         </th>
                                         <th scope="col" class="px-6 py-3 ">
-                                            <span class="flex justify-center">Total Discount</span>
+                                            <span class="flex justify-center">Rp</span>
                                         </th>
                                         <th scope="col" class="px-6 py-3"></th>
                                         <th scope="col" class="px-6 py-3"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
+                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 " v-for="(transaction, index) in transactions" :key="index">
                                         <td class="px-6 py-4">
                                             <div class="flex">
                                                 <a type="button" :href="route('barang.create')"
@@ -143,31 +143,31 @@
                                         </td>
                                         <th scope="row"
                                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            202101-0001
+                                            {{ transaction.transaction_number }}
                                         </th>
                                         <td class="px-6 py-4">
-                                            01-Jan-2021
+                                            {{ transaction.product_sku }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            Riki Kurniawan
+                                            {{ transaction.product }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            5
+                                            {{ transaction.qty }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            250,000.00
+                                            {{ transaction.total_product_price }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            <span class="flex justify-center">5%</span>
+                                            <span class="flex justify-center">{{ transaction.discount_percent == '' ? 0 : transaction.discount_percent }}%</span>
                                         </td>
                                         <td class="px-6 py-4">
-                                            <span class="flex justify-center">15,000.00</span>
+                                            <span class="flex justify-center">{{ transaction.discount_price }}</span>
                                         </td>
                                         <td class="px-6 py-4">
-                                            15,000.00
+                                            {{ transaction.total_discount_price }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            245,000.00
+                                            {{ transaction.grand_total }}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -175,6 +175,56 @@
 
 
                         </div>
+                        <div class="grid xl:grid-cols-2 gap-4 mb-4 sm:grid-cols-1 mt-2">
+                            <div class=" rounded-lg border-gray-300 dark:border-gray-600">
+
+                            </div>
+                            <div class=" rounded-lg border-gray-300 dark:border-gray-600 ">
+                                <div class="flex items-center justify-end">
+                                    <InputLabel for="sub_total" value="Sub Total" class="mr-2 " />
+                                    <TextInput
+                                    id="sub_total"
+                                    type="text"
+                                    class="mt-1 block w-1/2"
+                                    :value="subtotal"
+                                    disabled
+                                    autofocus
+                                    autocomplete="off"
+                                    />
+                                </div>
+                                <div class="flex items-center justify-end">
+                                    <InputLabel for="ongkir" value="Ongkir" class="mr-2 " />
+                                    <TextInput
+                                    id="ongkir"
+                                    type="number"
+                                    v-model="form.ongkir"
+                                    class="mt-1 block w-1/2"
+                                    placeholder="Type ongkir here .."
+                                    autofocus
+                                    autocomplete="off"
+                                    />
+                                </div>
+                                <div class="flex items-center justify-end">
+                                    <InputLabel for="discounts" value="Discount" class="mr-2" />
+                                    <TextInput
+                                    id="discount"
+                                    type="number"
+                                    v-model="form.discountTransaction"
+                                    class="mt-1 block w-1/2"
+                                    placeholder="Type discount here .."
+                                    autofocus
+                                    autocomplete="off"
+                                    />
+                                </div>
+                                <div class="flex items-center justify-end">
+                                    <InputLabel for="sub_total" value="Total Bayar :" class="mr-2 text-xl" />
+                                    <span class="text-2xl font-bold text-red-800">Rp.{{ Number(form.ongkir) + Number(form.discountTransaction) + subtotal }}</span>
+
+                                </div>
+                            </div>
+
+                        </div>
+
 
                         <div class="mt-2 flex items-center justify-center">
                             <button type="submit"
@@ -188,6 +238,8 @@
                                 Cancel
                             </a>
                         </div>
+
+
 
                     </form>
                 </div>
@@ -215,10 +267,10 @@
                 <form @submit.prevent="submitCart">
                         <div class="grid gap-6 mb-6 md:grid-cols-2">
                             <div class="relative">
-                                <InputLabel for="sku" value="Product"/>
+                                <InputLabel for="Product" value="Product"/>
                                 <TextInput
                                 id="Product"
-                                v-model="form.product_sku"
+                                v-model="form.product"
                                 type="text"
                                 class="mt-1 block w-full"
                                 required
@@ -227,9 +279,9 @@
                                 autocomplete="off"
                                 @keyup="onKeyUpProduct"
                                 />
-                                <InputError class="mt-2" :message="form.errors.product_sku" />
+                                <InputError class="mt-2" :message="form.errors.product" />
                                 <div v-show="dropdownVisibleProduct" id="dropdownProduct" class="w-full h-60 border border-gray-300 rounded-md bg-white absolute z-10 overflow-y-auto">
-                                    <div v-for="option in filteredProducts" :key="option.id" @click="selectOption(option.name, option.sku, option.price)" class="p-2.5 border-b border-gray-200 text-stone-600 cursor-pointer hover:bg-slate-100 transition-colors">
+                                    <div v-for="option in filteredProducts" :key="option.id" @click="selectOption(option.name, option.price, option.sku)" class="p-2.5 border-b border-gray-200 text-stone-600 cursor-pointer hover:bg-slate-100 transition-colors">
                                         {{ option.name }}
                                     </div>
                                 </div>
@@ -248,25 +300,13 @@
                                 />
                                 <InputError class="mt-2" :message="form.errors.qty" />
                             </div>
-                            <div>
-                                <InputLabel for="ongkir" value="Ongkir" />
-                                <TextInput
-                                id="ongkir"
-                                v-model="form.ongkir"
-                                type="text"
-                                class="mt-1 block w-full"
-                                placeholder="Type ongkir here .."
-                                autofocus
-                                autocomplete="off"
-                                />
-                                <InputError class="mt-2" :message="form.errors.ongkir" />
-                            </div>
+
                             <div>
                                 <InputLabel for="discount" value="Discount (%)" />
                                 <TextInput
                                 id="discount"
                                 v-model="form.discount"
-                                type="text"
+                                type="number"
                                 class="mt-1 block w-full"
                                 placeholder="Type discount here .."
                                 autofocus
@@ -277,8 +317,8 @@
                             </div>
                             <div>
                                 <InputLabel for="price" value="Total Price" />
-                                <span class="text-3xl line-through font-bold mr-2">Rp. 129</span>
-                                <span class="text-3xl font-bold">Rp. 80</span>
+                                <span id="price" class="text-2xl line-through font-bold mr-2" v-if="form.discount > 0">Rp. {{ (form.price * form.qty) + Number(form.ongkir) }}</span>
+                                <span class="text-3xl text-red-600 font-bold" >Rp. {{ ((form.price - (form.price * (form.discount/100))) * form.qty) + Number(form.ongkir) }}</span>
                             </div>
                         </div>
                         <div class="flex flex-row justify-end px-6 py-4 text-end">
@@ -314,6 +354,7 @@ import { ref, onMounted, watch, computed } from 'vue';
 import DialogModal from '@/Components/DialogModal.vue';
 import Datepicker from 'flowbite-datepicker/Datepicker';
 import { initFlowbite } from 'flowbite'
+import Swal from 'sweetalert2'
 
 export default {
     components: {
@@ -331,12 +372,18 @@ export default {
     },
     setup() {
         const transaction_number = ref('');
-        const date = ref('');
+        const transaction_date = ref('');
+        const product = ref('');
         const product_sku = ref('');
         const sku = ref('');
         const phone = ref('');
         const customer = ref('');
-        const price = ref(false);
+        const price = ref('');
+        const discount = ref('');
+        const discountTransaction = ref('');
+        const totalBayar = ref('');
+        const qty = ref('');
+        const ongkir = ref('');
         const isModalVisible = ref(false);
         const dropdownVisibleProduct = ref(false);
         const dropdownVisibleCustomer = ref(false);
@@ -374,8 +421,7 @@ export default {
                     todayBtnMode: 1,
                     clearBtn: true,
                     todayBtn: true,
-                    format: 'dd-MM-yyyy',
-                    language: 'id'
+                    format: 'mm-dd-yyyy'
                 }); // Initialize the datepicker
             } catch (error) {
                 console.error('Error initializing Flowbite:', error);
@@ -391,13 +437,23 @@ export default {
 
         const form = useForm({
             transaction_number: transaction_number.value,
+            product : product.value,
             product_sku : product_sku.value,
             customer : customer.value,
             sku: sku.value,
             phone: phone.value,
-            date: date.value,
-            price: price.value
+            transaction_date: transaction_date.value,
+            price: price.value,
+            discount: discount.value,
+            qty: qty.value,
+            ongkir: ongkir.value,
+            discountTransaction : discountTransaction.value,
+            totalBayar : ongkir + discountTransaction
         });
+
+
+        const totalWithoutDiscount = (form.price * form.qty) + form.ongkir;
+        const totalWithDiscount = ((form.price - (form.price * (form.discount/100))) * form.qty) + form.ongkir;
 
 
         let products = [
@@ -413,7 +469,7 @@ export default {
 
         const filteredProducts = computed(() => {
         return products.filter((product) =>
-            product.name.toLowerCase().includes(form.product_sku.toLowerCase())
+            product.name.toLowerCase().includes(form.product.toLowerCase())
         );
         });
 
@@ -424,8 +480,10 @@ export default {
             );
         });
 
-        const selectOption = (name) => {
-        form.product_sku = name;
+        const selectOption = (name, price, sku) => {
+        form.product = name;
+        form.price = price;
+        form.product_sku = product_sku;
         dropdownVisibleProduct.value = false;
         };
 
@@ -445,26 +503,31 @@ export default {
         dropdownVisibleCustomer.value = e.target.value !== '';
         };
 
+        /*
+            Tinggal Masukin ke local storage
+        */
 
 
-        const submitCart = () => {
-            // Lakukan logika submit keranjang di sini
-        };
 
 
         return {
             transaction_number,
+            product,
             product_sku,
             customer,
             sku,
             phone,
-            date,
+            transaction_date,
             price,
+            discount,
+            discountTransaction,
+            totalBayar,
+            qty,
             form,
+            ongkir,
             isModalVisible,
             openModal,
             closeModal,
-            submitCart,
             products,
             filteredProducts,
             selectOption,
@@ -474,8 +537,80 @@ export default {
             customers,
             filteredCustomers,
             selectOptionCustomer,
-            onKeyUpCustomer
+            onKeyUpCustomer,
+            totalWithoutDiscount,
+            totalWithDiscount
         };
+    },
+    data() {
+        return {
+            transactions: [],
+            subtotal : 0,
+        };
+    },
+    created() {
+        this.loadTransactionsCart();
+        this.calculateSubtotal();
+    },
+    methods: {
+        loadTransactionsCart() {
+            const storedTransactions = JSON.parse(localStorage.getItem('transactions')) || [];
+            this.transactions = storedTransactions;
+        },
+        submitCart() {
+            const transactionData = {
+                'transaction_number' : this.form.transaction_number,
+                'transaction_date' : this.form.transaction_date,
+                'customer_sku' : this.form.sku,
+                'customer_name' : this.form.customer,
+                'product_sku': this.form.product_sku,
+                'product' : this.form.product,
+                'qty' : this.form.qty,
+                'total_product_price' : this.form.price,
+                'discount_percent' : this.form.discount,
+                'discount_price' : (this.form.price) * (this.form.discount / 100),
+                'total_discount_price' : this.form.discount == '' ? 0 : this.form.price - (this.form.price * (this.form.discount / 100)),
+                'ongkir' : this.form.ongkir,
+                'grand_total' : this.form.price * this.form.qty - (this.form.price * (this.form.discount / 100))
+            };
+
+            let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+            transactions.push(transactionData);
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+
+            this.transactions.push(transactionData);
+
+            this.calculateSubtotal();
+
+            Swal.fire({
+                title: 'Success!',
+                text: 'Product successfully added to cart!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                this.closeModal();
+            });
+
+            this.resetForm();
+
+
+        },
+        resetForm() {
+            this.form.product = '';
+            this.form.qty = '';
+            this.form.discount = '';
+            this.form.price = '';
+        },
+
+        calculateSubtotal() {
+            this.subtotal = this.transactions.reduce((total, transaction) => {
+                return total + parseFloat(transaction.grand_total);
+            }, 0);
+        },
+
+
+
+
     }
 }
 </script>

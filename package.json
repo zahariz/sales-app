@@ -19,6 +19,7 @@
         "@vitejs/plugin-vue": "^5.0.4",
         "flowbite": "^2.3.0",
         "flowbite-datepicker": "^1.2.6",
+        "sweetalert2": "^11.11.0",
         "ziggy-js": "^2.2.1"
     }
 }
