@@ -7,7 +7,7 @@
 
         <div class="rounded-lg border-gray-300 dark:border-gray-600 mb-4">
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <h5 id="drawer-label" class="inline-flex items-center text-sm font-semibold text-gray-500 px-4 pt-4 uppercase dark:text-gray-400">Create Barang</h5>
+                <h5 id="drawer-label" class="inline-flex items-center text-sm font-semibold text-gray-500 px-4 pt-4 uppercase dark:text-gray-400">Edit Barang</h5>
                 <div class="p-4">
                     <form @submit.prevent="submit">
                         <div class="grid gap-6 mb-6 md:grid-cols-2">
@@ -19,7 +19,6 @@
                                 type="text"
                                 class="mt-1 block w-full"
                                 required
-                                disabled
                                 autofocus
                                 placeholder="Ex. B00001"
                                 autocomplete="off"
@@ -105,29 +104,13 @@
         },
         props: {
             title : String,
-            status : String
+            status : String,
+            data : Object
         },
-        setup() {
-            const sku = ref('');
-            const product = ref('');
-            const price = ref('');
-
-            function generateSku() {
-
-                let lastSku = localStorage.getItem('lastSkuNumber');
-                if (!lastSku) {
-                    lastSku = 'B0000';
-                }
-
-                let queueNumber = parseInt(lastSku.substring(1)) + 1;
-                queueNumber = ('0000' + queueNumber).slice(-4);
-
-                const newSku = `B${queueNumber}`;
-                return newSku;
-            }
-
-            const skuNumber = generateSku();
-            sku.value = skuNumber;
+        setup(props) {
+            const sku = ref(props.data.sku || '');
+            const product = ref(props.data.product || '');
+            const price = ref(props.data.price || '');
 
             const form = useForm({
             sku: sku.value,
@@ -136,10 +119,9 @@
             });
 
             const submit = () => {
-            form.post(route('barang.store'), {
+            form.put(route('barang.update', props.data.id), {
                 onFinish: () => {
                 form.reset('product');
-                localStorage.setItem('lastSkuNumber', sku.value);
                 product.value = '';
                 sku.value = '';
                 price.value = '';

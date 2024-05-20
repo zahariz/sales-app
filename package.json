@@ -17,9 +17,12 @@
         "@inertiajs/vue3": "^1.0.16",
         "@popperjs/core": "^2.11.8",
         "@vitejs/plugin-vue": "^5.0.4",
+        "date-fns": "^3.6.0",
         "flowbite": "^2.3.0",
         "flowbite-datepicker": "^1.2.6",
+        "lodash": "^4.17.21",
         "sweetalert2": "^11.11.0",
+        "vue-filter-number-format": "^3.0.1",
         "ziggy-js": "^2.2.1"
     }
 }

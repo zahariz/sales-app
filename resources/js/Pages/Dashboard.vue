@@ -3,25 +3,32 @@
         <Breadcrumb :title="title">
         </Breadcrumb>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-            <div class="border-2 border-dashed border-gray-300 rounded-lg dark:border-gray-600 h-32 md:h-64"></div>
-            <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64"></div>
-            <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64"></div>
-            <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64"></div>
+            <div class="bg-gray-200 rounded-lg dark:bg-gray-600 p-4 flex items-center justify-center">
+                <div class="flex flex-col items-center justify-center">
+                    <dt class="mb-2 text-3xl font-extrabold">{{ formatCurrency(income) }}</dt>
+                    <dd class="text-gray-500 dark:text-gray-400 font-bold text-xl">Income</dd>
+                </div>
+            </div>
+            <div class="rounded-lg bg-gray-200 dark:bg-gray-600 p-3 flex items-center justify-center">
+                <div class="flex flex-col items-center justify-center">
+                    <dt class="mb-2 text-3xl font-extrabold">{{ customer }}</dt>
+                    <dd class="text-gray-500 dark:text-gray-400 font-bold text-xl">Customer</dd>
+                </div>
+            </div>
+            <div class="rounded-lg bg-gray-200 dark:bg-gray-600 p-3 flex items-center justify-center">
+                <div class="flex flex-col items-center justify-center">
+                    <dt class="mb-2 text-3xl font-extrabold">{{ product }}</dt>
+                    <dd class="text-gray-500 dark:text-gray-400 font-bold text-xl">Product</dd>
+                </div>
+            </div>
+            <div class="rounded-lg bg-gray-200 dark:bg-gray-600 p-3 flex items-center justify-center">
+                <div class="flex flex-col items-center justify-center">
+                    <dt class="mb-2 text-3xl font-extrabold">{{ productSold }}+</dt>
+                    <dd class="text-gray-500 dark:text-gray-400 font-bold text-xl">Product Sold</dd>
+                </div>
+            </div>
         </div>
-        <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-96 mb-4"></div>
-        <div class="grid grid-cols-2 gap-4 mb-4">
-            <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-            <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-            <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-            <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-        </div>
-        <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-96 mb-4"></div>
-        <div class="grid grid-cols-2 gap-4">
-            <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-            <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-            <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-            <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-        </div>
+
     </AppLayout>
 </template>
 
@@ -37,7 +44,18 @@
             BreadcumbLink
         },
         props: {
-            title : String
+            title : String,
+            customer : Number,
+            product : Number,
+            productSold : String,
+            income : String,
+            auth: Object
+        },
+        methods: {
+            formatCurrency(value) {
+                if (!value) return 'Rp 0';
+                return `Rp ${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+            }
         }
     }
 

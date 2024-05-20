@@ -74,8 +74,8 @@
                                 clip-rule="evenodd"></path>
                         </svg>
                     </button>
-                    <ul id="master_data" :class="{ 'hidden': currentRoute !== 'barang' && currentRoute !== 'barang.create' && currentRoute !== 'customer' && currentRoute !== 'customer.create' }" class="py-2 space-y-2">
-                        <SidebarLink :href="routes.barang" :active="currentRoute === 'barang'" class="pl-11" >
+                    <ul id="master_data" :class="{ 'hidden': currentRoute !== 'barang' && currentRoute !== 'barang.create' && currentRoute !== 'barang.edit.{id}' && currentRoute !== 'customer' && currentRoute !== 'customer.create' && currentRoute !== 'customer.edit.{id}' }" class="py-2 space-y-2">
+                        <SidebarLink :href="routes.barang" :active="route().current('barang')" class="pl-11" >
                             Barang
                         </SidebarLink>
                         <SidebarLink :href="routes.customer" :active="currentRoute === 'customer'" class="pl-11" >

@@ -19,6 +19,7 @@
                                 type="text"
                                 class="mt-1 block w-full"
                                 required
+                                disabled
                                 autofocus
                                 placeholder="Ex. C00001"
                                 autocomplete="off"
@@ -108,28 +109,48 @@
         },
         setup() {
             const sku = ref('');
-            const product = ref('');
-            const price = ref(false);
+            const customer = ref('');
+            const phone = ref('');
+
+            function generateSku() {
+
+            let lastSku = localStorage.getItem('lastSkuCustomer');
+            if (!lastSku) {
+                lastSku = 'C0000';
+            }
+
+            let queueNumber = parseInt(lastSku.substring(1)) + 1;
+            queueNumber = ('0000' + queueNumber).slice(-4);
+
+            const newSku = `C${queueNumber}`;
+
+            return newSku;
+            }
+
+            const skuNumber = generateSku();
+            sku.value = skuNumber;
 
             const form = useForm({
             sku: sku.value,
-            product: product.value,
-            price: price.value ? 'on' : ''
+            customer: customer.value,
+            phone: phone.value
             });
 
             const submit = () => {
-            form.post(route('barang.store'), {
+            form.post(route('customer.store'), {
+
                 onFinish: () => {
-                form.reset('product');
-                product.value = '';
+                localStorage.setItem('lastSkuCustomer',sku.value);
+                form.reset('customer');
+                customer.value = '';
                 }
             });
             };
 
             return {
             sku,
-            product,
-            price,
+            customer,
+            phone,
             form,
             submit
             };

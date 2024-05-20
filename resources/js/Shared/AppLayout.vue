@@ -14,6 +14,7 @@ import Footer from './Footer.vue';
 
 defineProps({
     title: String,
+    auth : Object
 });
 
 

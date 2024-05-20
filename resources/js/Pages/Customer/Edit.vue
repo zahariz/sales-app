@@ -21,44 +21,44 @@
                                 required
                                 disabled
                                 autofocus
-                                placeholder="Ex. B00001"
+                                placeholder="Ex. C00001"
                                 autocomplete="off"
                                 />
                                 <InputError class="mt-2" :message="form.errors.sku" />
                             </div>
                             <div>
-                                <InputLabel for="product" value="Product" />
+                                <InputLabel for="customer" value="Customer" />
                                 <TextInput
-                                id="product"
-                                v-model="form.product"
+                                id="customer"
+                                v-model="form.customer"
                                 type="text"
                                 class="mt-1 block w-full"
                                 required
                                 autofocus
-                                placeholder="Ex. Laptop"
+                                placeholder="Riki Kurniawan"
                                 autocomplete="off"
                                 />
-                                <InputError class="mt-2" :message="form.errors.product" />
+                                <InputError class="mt-2" :message="form.errors.customer" />
                             </div>
                             <div>
-                                <InputLabel for="price" value="Price" />
+                                <InputLabel for="phone" value="Phone" />
                                 <TextInput
-                                id="price"
-                                v-model="form.price"
-                                type="number"
+                                id="phone"
+                                v-model="form.phone"
+                                type="text"
                                 class="mt-1 block w-full"
                                 required
                                 autofocus
-                                placeholder="Type price here .."
+                                placeholder="Type phone here .."
                                 autocomplete="off"
                                 />
-                                <InputError class="mt-2" :message="form.errors.price" />
+                                <InputError class="mt-2" :message="form.errors.phone" />
                             </div>
                             <div>
                             </div>
                         </div>
 
-                        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+                        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">Submit</button>
                     </form>
                 </div>
 
@@ -105,52 +105,34 @@
         },
         props: {
             title : String,
-            status : String
+            status : String,
+            data : Object
         },
-        setup() {
-            const sku = ref('');
-            const product = ref('');
-            const price = ref('');
-
-            function generateSku() {
-
-                let lastSku = localStorage.getItem('lastSkuNumber');
-                if (!lastSku) {
-                    lastSku = 'B0000';
-                }
-
-                let queueNumber = parseInt(lastSku.substring(1)) + 1;
-                queueNumber = ('0000' + queueNumber).slice(-4);
-
-                const newSku = `B${queueNumber}`;
-                return newSku;
-            }
-
-            const skuNumber = generateSku();
-            sku.value = skuNumber;
+        setup(props) {
+            const sku = ref(props.data.sku || '');
+            const customer = ref(props.data.customer || '');
+            const phone = ref(props.data.phone || '');
 
             const form = useForm({
             sku: sku.value,
-            product: product.value,
-            price: price.value
+            customer: customer.value,
+            phone: phone.value
             });
 
             const submit = () => {
-            form.post(route('barang.store'), {
+            form.put(route('customer.update', props.data.id), {
+
                 onFinish: () => {
-                form.reset('product');
-                localStorage.setItem('lastSkuNumber', sku.value);
-                product.value = '';
-                sku.value = '';
-                price.value = '';
+                form.reset('customer');
+                customer.value = '';
                 }
             });
             };
 
             return {
             sku,
-            product,
-            price,
+            customer,
+            phone,
             form,
             submit
             };

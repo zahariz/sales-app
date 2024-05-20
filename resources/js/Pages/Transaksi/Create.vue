@@ -4,6 +4,7 @@
             <BreadcumbLink :isCurrent="false" title="Transaction" />
             <BreadcumbLink :isCurrent="true" :title="title" />
         </Breadcrumb>
+        <flash-messages />
         <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 mb-4">
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
 
@@ -27,8 +28,8 @@
                                         <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
                                     </svg>
                                 </div>
-                                <TextInput id="datepicker" v-model="form.transaction_date" type="text"
-                                    class="mt-1 ps-10 block xl:w-1/2 w-full" required autofocus placeholder="Select Date"
+                                <TextInput id="datepicker" v-model="form.transaction_date" type="date"
+                                    class="mt-1 ps-10 block xl:w-1/2 w-full" autofocus placeholder="Select Date"
                                     autocomplete="off" />
                             </div>
                             <InputError class="mt-2" :message="form.errors.transaction_date" />
@@ -42,8 +43,8 @@
                                 autofocus placeholder="Find customer here .." autocomplete="off"  @keyup="onKeyUpCustomer" />
                             <InputError class="mt-2" :message="form.errors.sku" />
                             <div v-show="dropdownVisibleCustomer" id="dropdownCustomer" class="xl:w-1/2 w-full h-60 border border-gray-300 rounded-md bg-white absolute z-10 overflow-y-auto">
-                                <div v-for="option in filteredCustomers" :key="option.id" @click="selectOptionCustomer(option.name, option.sku, option.phone)" class="p-2.5 border-b border-gray-200 text-stone-600 cursor-pointer hover:bg-slate-100 transition-colors">
-                                   {{ option.sku }} - {{ option.name }}
+                                <div v-for="option in filteredCustomers" :key="option.id" @click="selectOptionCustomer(option.customer, option.sku, option.phone, option.id)" class="p-2.5 border-b border-gray-200 text-stone-600 cursor-pointer hover:bg-slate-100 transition-colors">
+                                   {{ option.sku }} - {{ option.customer }}
                                 </div>
                             </div>
                         </div>
@@ -117,7 +118,7 @@
                                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 " v-for="(transaction, index) in transactions" :key="index">
                                         <td class="px-6 py-4">
                                             <div class="flex">
-                                                <a type="button" :href="route('barang.create')"
+                                                <a type="submit" @click="editCart(index)"
                                                     class="inline-flex items-center px-4 py-2 mb-3 bg-indigo-800 dark:bg-indigo-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-indigo-800 uppercase tracking-widest hover:bg-indigo-700 dark:hover:bg-white focus:bg-indigo-700 dark:focus:bg-white active:bg-indigo-900 dark:active:bg-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-indigo-800 transition ease-in-out duration-150 mr-2">
                                                     <svg class="w-4 h-4 text-white-800 dark:text-white" aria-hidden="true"
                                                         xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -128,7 +129,7 @@
                                                     </svg>
 
                                                 </a>
-                                                <a type="button" :href="route('barang.create')"
+                                                <a type="button" @click="deleteCart(index)"
                                                     class="inline-flex items-center px-4 py-2 mb-3 bg-pink-800 dark:bg-pink-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-pink-800 uppercase tracking-widest hover:bg-pink-700 dark:hover:bg-white focus:bg-pink-700 dark:focus:bg-white active:bg-pink-900 dark:active:bg-pink-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-pink-800 transition ease-in-out duration-150">
                                                     <svg class="w-4 h-4 text-white-800 dark:text-white" aria-hidden="true"
                                                         xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -218,7 +219,7 @@
                                 </div>
                                 <div class="flex items-center justify-end">
                                     <InputLabel for="sub_total" value="Total Bayar :" class="mr-2 text-xl" />
-                                    <span class="text-2xl font-bold text-red-800">Rp.{{ Number(form.ongkir) + Number(form.discountTransaction) + subtotal }}</span>
+                                    <span class="text-2xl font-bold text-red-800"  id="totalBayars">Rp.{{ Number(form.ongkir) + Number(form.discountTransaction) + subtotal }}</span>
 
                                 </div>
                             </div>
@@ -264,7 +265,7 @@
                 Add Product
             </template>
             <template #content>
-                <form @submit.prevent="submitCart">
+                <form @submit.prevent="editingIndex === null ? submitCart() : updateCart()">
                         <div class="grid gap-6 mb-6 md:grid-cols-2">
                             <div class="relative">
                                 <InputLabel for="Product" value="Product"/>
@@ -281,8 +282,8 @@
                                 />
                                 <InputError class="mt-2" :message="form.errors.product" />
                                 <div v-show="dropdownVisibleProduct" id="dropdownProduct" class="w-full h-60 border border-gray-300 rounded-md bg-white absolute z-10 overflow-y-auto">
-                                    <div v-for="option in filteredProducts" :key="option.id" @click="selectOption(option.name, option.price, option.sku)" class="p-2.5 border-b border-gray-200 text-stone-600 cursor-pointer hover:bg-slate-100 transition-colors">
-                                        {{ option.name }}
+                                    <div v-for="option in filteredProducts" :key="option.id" @click="selectOption(option.product, option.price, option.sku, option.id)" class="p-2.5 border-b border-gray-200 text-stone-600 cursor-pointer hover:bg-slate-100 transition-colors">
+                                        {{ option.product }}
                                     </div>
                                 </div>
                             </div>
@@ -324,7 +325,7 @@
                         <div class="flex flex-row justify-end px-6 py-4 text-end">
                             <button type="submit"
                                 class="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-600">
-                                Submit
+                                {{ editingIndex === null ? 'Add to Cart' : 'Update Cart' }}
                             </button>
                             <button @click="closeModal"
                                 class="ml-2 text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:focus:ring-gray-600">
@@ -355,6 +356,7 @@ import DialogModal from '@/Components/DialogModal.vue';
 import Datepicker from 'flowbite-datepicker/Datepicker';
 import { initFlowbite } from 'flowbite'
 import Swal from 'sweetalert2'
+import FlashMessages from '@/Components/FlashMessage.vue';
 
 export default {
     components: {
@@ -364,26 +366,33 @@ export default {
         TextInput,
         InputError,
         InputLabel,
-        DialogModal
+        DialogModal,
+        FlashMessages
     },
     props: {
         title: String,
-        status: String
+        status: String,
+        product : Object,
+        customer : Object
     },
-    setup() {
+    setup(props) {
         const transaction_number = ref('');
         const transaction_date = ref('');
         const product = ref('');
         const product_sku = ref('');
+        const product_id = ref('');
         const sku = ref('');
         const phone = ref('');
         const customer = ref('');
+        const customer_id = ref('');
         const price = ref('');
         const discount = ref('');
         const discountTransaction = ref('');
         const totalBayar = ref('');
         const qty = ref('');
         const ongkir = ref('');
+        const detail = ref('');
+        const total = ref('');
         const isModalVisible = ref(false);
         const dropdownVisibleProduct = ref(false);
         const dropdownVisibleCustomer = ref(false);
@@ -410,36 +419,13 @@ export default {
 
 
 
-
-        onMounted(async () => {
-            try {
-
-
-                const datepickerElement = document.getElementById('datepicker');
-                initFlowbite();
-                new Datepicker(datepickerElement, {
-                    todayBtnMode: 1,
-                    clearBtn: true,
-                    todayBtn: true,
-                    format: 'mm-dd-yyyy'
-                }); // Initialize the datepicker
-            } catch (error) {
-                console.error('Error initializing Flowbite:', error);
-            }
-        });
-
-        const openModal = () => {
-            isModalVisible.value = true;
-        };
-        const closeModal = () => {
-            isModalVisible.value = false;
-        };
-
         const form = useForm({
             transaction_number: transaction_number.value,
             product : product.value,
             product_sku : product_sku.value,
+            product_id : product_id.value,
             customer : customer.value,
+            customer_id : customer_id.value,
             sku: sku.value,
             phone: phone.value,
             transaction_date: transaction_date.value,
@@ -448,49 +434,54 @@ export default {
             qty: qty.value,
             ongkir: ongkir.value,
             discountTransaction : discountTransaction.value,
-            totalBayar : ongkir + discountTransaction
+            total : 0,
+            totalBayar : 0,
+            detail : 0
         });
+
+
+        const openModal = () => {
+            isModalVisible.value = true;
+        };
+        const closeModal = () => {
+            isModalVisible.value = false;
+        };
 
 
         const totalWithoutDiscount = (form.price * form.qty) + form.ongkir;
         const totalWithDiscount = ((form.price - (form.price * (form.discount/100))) * form.qty) + form.ongkir;
 
 
-        let products = [
-            { id : 1, name: "Product 1", sku: "P1", price: 5000 },
-            { id: 2, name: "Product 2", sku: "P2", price: 10000},
-            // Tambahkan data produk lainnya sesuai kebutuhan
-        ];
+        let products = props.product;
 
-        let customers = [
-            {id: 1, name: 'Riki Kurniawan', sku: 'C0001', phone: '089519067218' },
-            {id: 2, name: 'Rika', sku: 'C0002', phone: '089519067218' }
-        ];
+        let customers = props.customer;
 
         const filteredProducts = computed(() => {
-        return products.filter((product) =>
-            product.name.toLowerCase().includes(form.product.toLowerCase())
+        return products.filter((pd) =>
+            pd.product.toLowerCase().includes(form.product.toLowerCase())
         );
         });
 
         const filteredCustomers = computed(() => {
             return customers.filter((cs) =>
-                cs.name.toLowerCase().includes(form.sku.toLowerCase()) ||
+                cs.customer.toLowerCase().includes(form.sku.toLowerCase()) ||
                 cs.sku.toLowerCase().includes(form.sku.toLowerCase())
             );
         });
 
-        const selectOption = (name, price, sku) => {
+        const selectOption = (name, price, sku, id) => {
         form.product = name;
         form.price = price;
-        form.product_sku = product_sku;
+        form.product_sku = sku;
+        form.product_id = id;
         dropdownVisibleProduct.value = false;
         };
 
-        const selectOptionCustomer = (name, sku, phone) => {
+        const selectOptionCustomer = (name, sku, phone, id) => {
         form.customer = name;
         form.sku = sku;
         form.phone = phone;
+        form.customer_id = id;
         dropdownVisibleCustomer.value = false;
         };
 
@@ -503,18 +494,29 @@ export default {
         dropdownVisibleCustomer.value = e.target.value !== '';
         };
 
-        /*
-            Tinggal Masukin ke local storage
-        */
+        const submit = () => {
+            form.totalBayar = Number(form.ongkir) - Number(form.discountTransaction) + Number(form.total);
+            form.post(route('transaksi.store'), {
+                onSuccess: () => {
+                    localStorage.removeItem('transactions');
+                    localStorage.setItem('lastTransactionNumber', form.transaction_number);
+                    },
+                    onError: (errors) => {
+                        // Handle errors if needed
+                        console.error(errors);
+                    }
+                });
 
-
-
+            };
 
         return {
             transaction_number,
             product,
+            submit,
             product_sku,
+            product_id,
             customer,
+            customer_id,
             sku,
             phone,
             transaction_date,
@@ -525,6 +527,8 @@ export default {
             qty,
             form,
             ongkir,
+            detail,
+            total,
             isModalVisible,
             openModal,
             closeModal,
@@ -556,6 +560,7 @@ export default {
         loadTransactionsCart() {
             const storedTransactions = JSON.parse(localStorage.getItem('transactions')) || [];
             this.transactions = storedTransactions;
+            this.form.detail = storedTransactions;
         },
         submitCart() {
             const transactionData = {
@@ -564,13 +569,13 @@ export default {
                 'customer_sku' : this.form.sku,
                 'customer_name' : this.form.customer,
                 'product_sku': this.form.product_sku,
+                'product_id': this.form.product_id,
                 'product' : this.form.product,
                 'qty' : this.form.qty,
-                'total_product_price' : this.form.price,
+                'product_price' : this.form.price,
                 'discount_percent' : this.form.discount,
                 'discount_price' : (this.form.price) * (this.form.discount / 100),
                 'total_discount_price' : this.form.discount == '' ? 0 : this.form.price - (this.form.price * (this.form.discount / 100)),
-                'ongkir' : this.form.ongkir,
                 'grand_total' : this.form.price * this.form.qty - (this.form.price * (this.form.discount / 100))
             };
 
@@ -595,6 +600,82 @@ export default {
 
 
         },
+        editCart(index) {
+            this.isModalVisible = true;
+            const transaction = this.transactions[index];
+            this.form.transaction_number = transaction.transaction_number;
+            this.form.transaction_date = transaction.transaction_date;
+            this.form.sku = transaction.customer_sku;
+            this.form.customer = transaction.customer_name;
+            this.form.product_sku = transaction.product_sku;
+            this.form.product = transaction.product;
+            this.form.qty = transaction.qty;
+            this.form.price = transaction.total_product_price;
+            this.form.discount = transaction.discount_percent;
+            this.form.ongkir = transaction.ongkir;
+
+            this.editingIndex = index;
+        },
+        updateCart() {
+            if (this.editingIndex !== null) {
+                const transactionData = {
+                    'transaction_number' : this.form.transaction_number,
+                    'transaction_date' : this.form.transaction_date,
+                    'customer_sku' : this.form.sku,
+                    'customer_name' : this.form.customer,
+                    'product_sku': this.form.product_sku,
+                    'product_id': this.form.product_id,
+                    'product' : this.form.product,
+                    'qty' : this.form.qty,
+                    'product_price' : this.form.price,
+                    'discount_percent' : this.form.discount,
+                    'discount_price' : (this.form.price) * (this.form.discount / 100),
+                    'total_discount_price' : this.form.discount == '' ? 0 : this.form.price - (this.form.price * (this.form.discount / 100)),
+                    'ongkir' : this.form.ongkir,
+                    'grand_total' : this.form.price * this.form.qty - (this.form.price * (this.form.discount / 100))
+                };
+
+                this.transactions.splice(this.editingIndex, 1, transactionData);
+                localStorage.setItem('transactions', JSON.stringify(this.transactions));
+
+                this.calculateSubtotal();
+
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Product successfully updated in cart!',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+
+                this.resetForm();
+                this.editingIndex = null;
+                this.closeModal();
+            }
+        },
+        deleteCart(index) {
+                Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you really want to delete this product from the cart?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, keep it'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.transactions.splice(index, 1);
+                    localStorage.setItem('transactions', JSON.stringify(this.transactions));
+
+                    this.calculateSubtotal();
+
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: 'Product successfully removed from cart!',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        },
         resetForm() {
             this.form.product = '';
             this.form.qty = '';
@@ -606,6 +687,9 @@ export default {
             this.subtotal = this.transactions.reduce((total, transaction) => {
                 return total + parseFloat(transaction.grand_total);
             }, 0);
+
+            this.form.total = this.subtotal;
+
         },
 
 

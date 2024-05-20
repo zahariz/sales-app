@@ -7,6 +7,7 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import Avatar from '@/assets/profile.jpg'
 
 import Header from './Header.vue';
 import Sidebar from './Sidebar.vue';
@@ -19,9 +20,13 @@ onMounted(() => {
     initFlowbite();
 });
 
-defineProps({
+const props = defineProps({
     title: String,
+    auth : Object
 });
+
+console.log(props.auth);
+
 
 const showingNavigationDropdown = ref(false);
 
@@ -113,7 +118,7 @@ const logout = () => {
                     </svg>
                 </button>
                 <!-- Dropdown menu -->
-                <div class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white rounded divide-y divide-gray-100 shadow-lg dark:divide-gray-600 dark:bg-gray-700 rounded-xl"
+                <div class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white  divide-y divide-gray-100 shadow-lg dark:divide-gray-600 dark:bg-gray-700 rounded-xl"
                     id="notification-dropdown">
                     <div
                         class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-600 dark:text-gray-300">
@@ -177,7 +182,7 @@ const logout = () => {
                     </svg>
                 </button>
                 <!-- Dropdown menu -->
-                <div class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white rounded divide-y divide-gray-100 shadow-lg dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
+                <div class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white divide-y divide-gray-100 shadow-lg dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                     id="apps-dropdown">
                     <div
                         class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-600 dark:text-gray-300">
@@ -230,18 +235,7 @@ const logout = () => {
                                 Barang
                             </div>
                         </a>
-                        <a :href="route('profile')" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group">
-                            <svg aria-hidden="true"
-                                class="mx-auto mb-1 w-7 h-7 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
-                                fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                            <div class="text-sm text-gray-900 dark:text-white">
-                                Profile
-                            </div>
-                        </a>
+
                         <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group">
                             <svg aria-hidden="true"
                                 class="mx-auto mb-1 w-7 h-7 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
@@ -263,20 +257,13 @@ const logout = () => {
                     <img :src="Avatar" class="h-8 w-8 rounded-full">
                 </button>
                 <!-- Dropdown menu -->
-                <div class="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
+                <div class="hidden z-50 my-4 w-56 text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                     id="dropdown">
                     <div class="py-3 px-4">
                         <span class="block text-sm font-semibold text-gray-900 dark:text-white">Riki Kurniawan</span>
                         <span class="block text-sm text-gray-900 truncate dark:text-white">Props Email</span>
                     </div>
-                    <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
-                        <li>
-                            <ResponsiveNavLink :href="route('profile')" :active="route().current('profile')" >
-                                Profile
-                            </ResponsiveNavLink>
-                        </li>
 
-                    </ul>
                     <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
 
                     </ul>
@@ -284,7 +271,7 @@ const logout = () => {
                         <li>
                             <!-- Authentication -->
                             <form method="POST" @submit.prevent="logout">
-                                <ResponsiveNavLink as="button" :href="route('dashboard')">
+                                <ResponsiveNavLink as="button" :href="route('logout')">
                                     Log Out
                                 </ResponsiveNavLink>
                             </form>
@@ -297,6 +284,3 @@ const logout = () => {
     </nav>
 </template>
 
-<script>
-    import Avatar from '@/assets/profile.jpg'
-</script>

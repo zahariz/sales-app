@@ -11,8 +11,7 @@ import { Link } from '@inertiajs/vue3';
         </svg>
 
 
-        <div class="font-bold text-2xl"><span class="text-red-500">Admin</span><span class="text-[#42B883]">V</span><span class="
-            text-[#756EEC]">I</span><span class="text-red-500">L</span><span class="text-sky-500">T</span></div>
+        <div class="font-bold text-2xl"><span class="text-red-500">Sales Apps</span></div>
     </div>
 
     </Link>

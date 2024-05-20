@@ -37,7 +37,7 @@ export default {
     });
 
     const submit = () => {
-      form.post(route('login'), {
+      form.post(route('login.auth'), {
         onFinish: () => {
           form.reset('password');
           password.value = '';
